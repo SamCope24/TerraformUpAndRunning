@@ -1,0 +1,16 @@
+terraform init 
+    Command to tell terraform to scan the code and figure out which providers are being 
+    used and download the code for them. Need to run this anytime when starting with 
+    new terraform code. Command is idempotent so can be run multiple times.
+
+terraform plan
+    Lets you see what terraform will do before actually making any changes
+    Anything with + will be created
+    Anything with - will be deleted
+    Anything with ~ will be modified in place
+
+terraform apply
+    Command used to create our infrastructure!
+
+terraform fmt
+    Used to format terraform files
