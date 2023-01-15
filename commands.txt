@@ -22,3 +22,7 @@ terraform fmt
 terraform graph
     Used to illustrate the terraform dependency graph in DOT
     can be used to turn into an image using Graphviz
+
+terraform output
+    Command to list all outputs without applying any changes
+    can be more specific with: terraform output <OUTPUT_NAME>
