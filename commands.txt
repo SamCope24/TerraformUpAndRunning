@@ -14,3 +14,11 @@ terraform apply
 
 terraform fmt
     Used to format terraform files
+
+<<-EOF and EOF
+    Terraform heredoc syntax that allows writing multiline strings without
+    having to use \n characters all over the place
+
+terraform graph
+    Used to illustrate the terraform dependency graph in DOT
+    can be used to turn into an image using Graphviz
