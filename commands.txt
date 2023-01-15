@@ -12,6 +12,9 @@ terraform plan
 terraform apply
     Command used to create our infrastructure!
 
+terraform destroy
+    Command used to tear down infrastructure
+
 terraform fmt
     Used to format terraform files
 
