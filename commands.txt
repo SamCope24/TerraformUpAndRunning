@@ -29,3 +29,17 @@ terraform graph
 terraform output
     Command to list all outputs without applying any changes
     can be more specific with: terraform output <OUTPUT_NAME>
+
+(Workspaces only really ever used for testing, not suitable for isolating environments)
+
+terraform workspace show
+    Command used to identify what workspace you're currently in
+
+terraform workspace new <WORKSPACE_NAME>
+    Creates a new workspace
+
+terraform workspace list
+    Command used to list workspaces
+
+terraform workspace select <WORKSPACE_NAME>
+    Used to move between workspaces
