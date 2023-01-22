@@ -65,13 +65,6 @@ resource "aws_security_group" "instance" {
   }
 }
 
-# variable for sotring the port number in a single place
-variable "server_port" {
-  description = "The port the server will use for HTTP requests"
-  type        = number
-  default     = 8080
-}
-
 # creates the application load balancer
 resource "aws_alb" "example" {
   name               = "terraform-asg-example"
@@ -161,7 +154,14 @@ resource "aws_lb_listener_rule" "asg" {
   }
 }
 
-output "alb_dns_name" {
-  value       = aws_alb.example.dns_name
-  description = "The domain name of the load balancer"
+# configure terraform to store state in an S3 bucket
+terraform {
+  backend "s3" {
+    bucket = "terraform-up-and-running-state-5829cbe9"
+    key    = "stage/services/webserver-cluster/terraform.tfstate"
+    region = "us-east-2"
+
+    dynamodb_table = "terraform-up-and-running-locks"
+    encrypt        = true
+  }
 }
