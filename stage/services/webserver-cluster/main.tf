@@ -20,12 +20,12 @@ resource "aws_launch_configuration" "example" {
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.instance.id] # links the EC2 instance to the security group
 
-  # script that runs on startup and launches a websever
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello World!" > index.html
-              nohup busybox httpd -f -p ${var.server_port} &
-              EOF
+  # script that runs on startup and launches a websever, rendered via a template 
+  user_data = templatefile("user-data.sh", {
+    server_port = var.server_port
+    db_address  = data.terraform_remote_state.db.outputs.address
+    db_port     = data.terraform_remote_state.db.outputs.port
+  })
 
   # Required when using a launch configuration with an auto scaling group 
   lifecycle {
@@ -163,5 +163,17 @@ terraform {
 
     dynamodb_table = "terraform-up-and-running-locks"
     encrypt        = true
+  }
+}
+
+# read outputs from the database's state file 
+# all od the database's output variables are stored in the state file
+data "terraform_remote_state" "db" {
+  backend = "s3"
+
+  config = {
+    bucket = "terraform-up-and-running-state-5829cbe9"
+    key    = "stage/data-stores/mysql/terraform.tfstate"
+    region = "us-east-2"
   }
 }
