@@ -13,11 +13,11 @@ data "aws_subnets" "default" {
 
 resource "aws_launch_configuration" "example" {
   image_id        = "ami-0fb653ca2d3203ac1"
-  instance_type   = "t2.micro"
+  instance_type   = var.instance_type
   security_groups = [aws_security_group.instance.id] # links the EC2 instance to the security group
 
   # script that runs on startup and launches a websever, rendered via a template 
-  user_data = templatefile("user-data.sh", {
+  user_data = templatefile("${path.module}/user-data.sh", {
     server_port = var.server_port
     db_address  = data.terraform_remote_state.db.outputs.address
     db_port     = data.terraform_remote_state.db.outputs.port
@@ -37,19 +37,19 @@ resource "aws_autoscaling_group" "example" {
   target_group_arns = [aws_lb_target_group.asg.arn]
   health_check_type = "ELB"
 
-  min_size = 3
-  max_size = 10
+  min_size = var.min_size
+  max_size = var.max_size
 
   tag {
     key                 = "Name"
-    value               = "terraform-asg-example"
+    value               = var.cluster_name
     propagate_at_launch = true
   }
 }
 
 # aws securtiy group to allow incoming requests on port 8080 from any IP
 resource "aws_security_group" "instance" {
-  name = "terraform-example-instance"
+  name = "${var.cluster_name}-instance"
 
   ingress {
     description      = "Example Security Group"
@@ -63,7 +63,7 @@ resource "aws_security_group" "instance" {
 
 # creates the application load balancer
 resource "aws_alb" "example" {
-  name               = "terraform-asg-example"
+  name               = var.cluster_name
   load_balancer_type = "application"
   subnets            = data.aws_subnets.default.ids
   security_groups    = [aws_security_group.alb.id]
@@ -89,7 +89,7 @@ resource "aws_lb_listener" "http" {
 
 # by default ALB does not allow any incoming/outgoing traffic so need a SG
 resource "aws_security_group" "alb" {
-  name = "terraform-example-alb"
+  name = "${var.cluster_name}-alb"
 
   # Allow inbound HTTP requests
   ingress {
@@ -114,7 +114,7 @@ resource "aws_security_group" "alb" {
 
 # create a target group for our ASG
 resource "aws_lb_target_group" "asg" {
-  name     = "terraform-asg-example"
+  name     = var.cluster_name
   port     = var.server_port
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.default.id
@@ -150,26 +150,14 @@ resource "aws_lb_listener_rule" "asg" {
   }
 }
 
-# configure terraform to store state in an S3 bucket
-terraform {
-  backend "s3" {
-    bucket = "terraform-up-and-running-state-5829cbe9"
-    key    = "stage/services/webserver-cluster/terraform.tfstate"
-    region = "us-east-2"
-
-    dynamodb_table = "terraform-up-and-running-locks"
-    encrypt        = true
-  }
-}
-
 # read outputs from the database's state file 
 # all od the database's output variables are stored in the state file
 data "terraform_remote_state" "db" {
   backend = "s3"
 
   config = {
-    bucket = "terraform-up-and-running-state-5829cbe9"
-    key    = "stage/data-stores/mysql/terraform.tfstate"
+    bucket = var.db_remote_state_bucket
+    key    = var.db_remote_state_key
     region = "us-east-2"
   }
 }

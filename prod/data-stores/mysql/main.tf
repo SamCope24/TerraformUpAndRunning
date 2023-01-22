@@ -17,7 +17,7 @@ resource "aws_db_instance" "example" {
 terraform {
   backend "s3" {
     bucket = "terraform-up-and-running-state-5829cbe9"
-    key    = "stage/data-stores/mysql/terraform.tfstate"
+    key    = "prod/data-stores/mysql/terraform.tfstate"
     region = "us-east-2"
 
     dynamodb_table = "terraform-up-and-running-locks"
