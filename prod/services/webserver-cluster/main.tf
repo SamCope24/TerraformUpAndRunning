@@ -15,7 +15,7 @@ module "webserver_cluster" {
 }
 
 # scheduled action to increase ASG capacity in core business hours
-resource "aws_autoscaling_schedule" "scale_in_at_night" {
+resource "aws_autoscaling_schedule" "scale_out_during_business_hours" {
   scheduled_action_name = "scale-out-during-business-hours"
   min_size = 2
   max_size = 10

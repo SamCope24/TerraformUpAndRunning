@@ -59,7 +59,7 @@ resource "aws_security_group_rule" "instance_allow_http_inbound" {
   from_port        = var.server_port
   to_port          = var.server_port
   protocol         = local.tcp_protocol
-  cidr_blocks      = local.any_port
+  cidr_blocks      = local.all_ips
   ipv6_cidr_blocks = local.all_ipv6_ips
 }
 
