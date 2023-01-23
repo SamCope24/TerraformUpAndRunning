@@ -13,3 +13,17 @@ module "webserver_cluster" {
   min_size      = 2
   max_size      = 3
 }
+
+# as not using inline ingress/egress we can add new rules for the staging
+# env to expose additional ports for testing purposes
+
+resource "aws_security_group_rule" "allow_testing_inbound" {
+  type = "ingress"
+  security_group_id = module.webserver_cluster.alb_security_group_id
+
+  from_port = 12345
+  to_port = 12345
+  protocol         = "tcp"
+  cidr_blocks      = ["0.0.0.0/0"]
+  ipv6_cidr_blocks = ["::/0"]
+}
