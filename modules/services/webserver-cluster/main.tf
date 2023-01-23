@@ -55,9 +55,9 @@ resource "aws_security_group" "instance" {
     description      = "Example Security Group"
     from_port        = var.server_port
     to_port          = var.server_port
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    protocol         = local.tcp_protocol
+    cidr_blocks      = local.any_port
+    ipv6_cidr_blocks = local.all_ipv6_ips
   }
 }
 
@@ -72,7 +72,7 @@ resource "aws_alb" "example" {
 # creates the ALB listener
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_alb.example.arn
-  port              = 80
+  port              = local.http_port
   protocol          = "HTTP"
 
   # by default return a simple 404 page
@@ -94,21 +94,21 @@ resource "aws_security_group" "alb" {
   # Allow inbound HTTP requests
   ingress {
     description      = "ALB Security Group"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    from_port        = local.http_port
+    to_port          = local.http_port
+    protocol         = local.tcp_protocol
+    cidr_blocks      = local.all_ips
+    ipv6_cidr_blocks = local.all_ipv6_ips
   }
 
   # Allow all outbound requests
   egress {
     description      = "ALB Security Group"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    from_port        = local.any_port
+    to_port          = local.any_port
+    protocol         = local.any_protocol
+    cidr_blocks      = local.all_ips
+    ipv6_cidr_blocks = local.all_ipv6_ips
   }
 }
 
