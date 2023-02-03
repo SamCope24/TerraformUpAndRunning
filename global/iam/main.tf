@@ -4,9 +4,7 @@ provider "aws" {
 
 module "users" {
   source = "../../../modules/landing-zone/iam-user"
-
-  count     = length(var.user_names)
-  user_name = var.user_names[count.index]
+  user_names = var.user_names
 }
 
 variable "user_names" {
@@ -16,6 +14,6 @@ variable "user_names" {
 }
 
 output "all_arns" {
-  value       = module.users[*].user_arn
+  value       = module.users.all_users
   description = "The ARNs for all users"
 }
