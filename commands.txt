@@ -43,3 +43,15 @@ terraform workspace list
 
 terraform workspace select <WORKSPACE_NAME>
     Used to move between workspaces
+
+[for <ITEM> in <LIST> : <OUTPUT>]
+    Used to loop over a list
+
+[for <KEY>, <VALUE> in <MAP> : <OUTPUT>]
+    Used to loop over a map
+
+{for <ITEM> in <LIST> : <OUTPUT_KEY> => <OUTPUT_VALUE>}
+    Loop over a list and output a map
+
+{for <KEY>, <VALUE> in <LIST> : <OUTPUT_KEY> => <OUTPUT_VALUE>}
+    Loop over a map and output a map
