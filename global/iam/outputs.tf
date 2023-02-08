@@ -8,6 +8,11 @@ output "all_arns" {
   description = "The ARNs for all users"
 }
 
+output "neo_cloudwatch_policy_arn" {
+  value = module.users.neo_cloudwatch_policy_arn
+  description = "The arn of the cloudwatch policy attached to neo"
+}
+
 output "upper_names" {
   value = [for name in var.user_names : upper(name) if length(name) < 5]
 }
