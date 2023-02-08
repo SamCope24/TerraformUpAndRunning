@@ -12,31 +12,10 @@ module "webserver_cluster" {
   instance_type = "t2.micro"
   min_size      = 2
   max_size      = 5
+  enable_autoscaling = true
 
   custom_tags = {
     Owner = "team-foo"
     ManagedBy = "terraform"
   }
-}
-
-# scheduled action to increase ASG capacity in core business hours
-resource "aws_autoscaling_schedule" "scale_out_during_business_hours" {
-  scheduled_action_name = "scale-out-during-business-hours"
-  min_size = 2
-  max_size = 10
-  desired_capacity = 10
-  recurrence = "0 9 * * *" # cron syntax - 9am every day
-
-  autoscaling_group_name = module.webserver_cluster.asg_name
-}
-
-# scheduled action to decrease ASG capacity outside of core business hours
-resource "aws_autoscaling_schedule" "scale_in_at_night" {
-  scheduled_action_name = "scale-in-at-night"
-  min_size = 2
-  max_size = 10
-  desired_capacity = 2
-  recurrence = "0 17 * * *" # cron syntax - 5pm every day
-
-  autoscaling_group_name = module.webserver_cluster.asg_name
 }

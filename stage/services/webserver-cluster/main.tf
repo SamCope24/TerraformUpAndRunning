@@ -12,6 +12,7 @@ module "webserver_cluster" {
   instance_type = "t2.micro"
   min_size      = 2
   max_size      = 3
+  enable_autoscaling = false
 }
 
 # as not using inline ingress/egress we can add new rules for the staging
