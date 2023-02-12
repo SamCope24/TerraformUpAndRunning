@@ -3,7 +3,10 @@ provider "aws" {
 }
 
 module "webserver_cluster" {
-  source = "git@github.com:SamCope24/TerraformUpAndRunningModules.git//services/webserver-cluster?ref=v0.0.1"
+  source = "../../../../modules/services/webserver-cluster"
+
+  ami = "ami-0fb653ca2d3203ac1"
+  server_text = "Think Positive!"
 
   cluster_name           = "webservers-stage"
   db_remote_state_bucket = "terraform-up-and-running-state-5829cbe9"
