@@ -8,6 +8,8 @@ terraform plan
     Anything with + will be created
     Anything with - will be deleted
     Anything with ~ will be modified in place
+    Note that terraform plan only looks at resources in it's terraform state files
+    Plan will not take account of any resources created outside of terraform
 
 terraform apply
     Command used to create our infrastructure!
@@ -61,3 +63,12 @@ terraform workspace select <WORKSPACE_NAME>
 
 %{ for <INDEX>, <ITEM> in <COLLECTION> }<BODY>%{ endfor }
     Same thing but using the index
+
+terraform import <PROVIDER>_<TYPE>.<NAME>
+    Used to import infrastructure you created before starting to use terraform
+
+terraform state mv <ORIGINAL_REFERENCE> <NEW_REFERENCE>
+    Used for manually updating terraform state
+    where ORIGINAL_REFERENCE is the reference expression to the resource as it is now
+    and NEW_REFERENCE is the new location you want to move it to.
+    e.g. renaming: terraform state mv aws_security_group.instance aws_security_group.cluster_instance
