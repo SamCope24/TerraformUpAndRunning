@@ -2,15 +2,9 @@ provider "aws" {
   region = "us-east-2"
 }
 
-resource "aws_db_instance" "example" {
-  identifier_prefix   = "terraform-up-and-running"
-  engine              = "mysql"
-  allocated_storage   = 10
-  instance_class      = "db.t2.micro"
-  skip_final_snapshot = true
-  db_name             = "example_database"
-  username = var.db_username
-  password = var.db_password
+module "db" {
+    source = "../../../../modules/data-stores/mysql"
+    db_name = "staging_db"
 }
 
 # configure terraform to store state in an S3 bucket
